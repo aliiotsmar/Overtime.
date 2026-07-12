@@ -41,7 +41,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen p-3 sm:p-6 print-padding pb-safe">
 
-    <!-- الهوية البصرية الرسمية (متجاوبة ولا تحجب المحتوى) -->
+    <!-- الهوية البصرية الرسمية -->
     <div class="header-container relative bg-white shadow-sm border-b border-gray-200 py-3 px-3 mb-4 rounded-2xl max-w-5xl mx-auto no-print pt-safe">
         <div class="flex flex-col items-center justify-center">
             <img src="https://d.top4top.io/p_3845nghbv1.png" alt="شعار حساب ساعات خارج الدوام" class="w-36 sm:w-48 h-auto mx-auto object-contain">
@@ -115,8 +115,8 @@
         <div class="mb-4">
             <h2 class="text-xs sm:text-sm font-bold text-gray-800 mb-2 no-print">📋 بيان رصد الساعات والتفاصيل</h2>
             
-            <!-- الجدول (للشاشات الكبيرة والطباعة) -->
-            <div class="table-container md:block overflow-x-auto border border-gray-200 rounded-xl">
+            <!-- الجدول (مخفي في الجوال ويظهر في الشاشات الكبيرة والطباعة فقط) -->
+            <div class="table-container hidden md:block overflow-x-auto border border-gray-200 rounded-xl">
                 <table class="w-full text-right border-collapse">
                     <thead>
                         <tr class="bg-gray-800 text-white text-sm font-bold print:bg-gray-200 print:text-black">
@@ -131,7 +131,7 @@
                 </table>
             </div>
 
-            <!-- الكروت المرنة (للآيفون) -->
+            <!-- الكروت المرنة (تظهر في الجوال ومخفية تماماً في الشاشات الكبيرة والطباعة) -->
             <div id="logsMobileCards" class="mobile-cards block md:hidden space-y-2 no-print"></div>
 
             <div id="noDataMessage" class="text-center p-6 text-gray-400 border border-dashed border-gray-200 rounded-xl mt-2 text-xs hidden">
@@ -169,7 +169,6 @@
         let metaData = { planFrom: '2026-04-01', planTo: new Date().toISOString().split('T')[0] };
 
         window.onload = function() {
-            // استرجاع البيانات المحفوظة بدلاً من تصفيرها
             if (localStorage.getItem('activePeriodLogs')) {
                 activePeriodLogs = JSON.parse(localStorage.getItem('activePeriodLogs'));
             }
