@@ -2,7 +2,6 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <!-- تحسين العرض ليتناسب مع نتوء وحواف الآيفون (Notch & Safe Areas) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>حساب ساعات خارج الدوام - Aliiot</title>
     <!-- استدعاء Tailwind CSS -->
@@ -11,30 +10,29 @@
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
         body { 
             font-family: 'Tajawal', sans-serif; 
-            /* دعم حواف الآيفون السفلية والعلوية */
-            padding-top: env(safe-area-inset-top, 12px);
-            padding-bottom: env(safe-area-inset-bottom, 12px);
-            padding-left: env(safe-area-inset-left, 12px);
-            padding-right: env(safe-area-inset-right, 12px);
+            padding-top: env(safe-area-inset-top, 8px);
+            padding-bottom: env(safe-area-inset-bottom, 8px);
+            padding-left: env(safe-area-inset-left, 8px);
+            padding-right: env(safe-area-inset-right, 8px);
             -webkit-font-smoothing: antialiased;
         }
         
-        /* تحسينات مخصصة لتجربة مستخدم الآيفون (iOS) */
-        button, input, img, a {
-            -webkit-tap-highlight-color: transparent; /* إلغاء التظليل الرمادي المزعج عند الضغط في الآيفون */
+        /* منع التظليل والتحكم باللمس للآيفون */
+        button, input, img, a, select {
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* منع التكبير التلقائي المزعج في متصفح Safari بالآيفون عند التركيز على المدخلات */
+        /* منع التكبير التلقائي المزعج لمتصفح Safari بالجوال مع ضمان التنسيق */
         input[type="date"], input[type="time"], input[type="text"], select {
-            font-size: 16px !important; 
+            font-size: 15px !important; 
+            max-width: 100% !important;
+            box-sizing: border-box !important;
         }
 
-        /* تنعيم التمرير للجداول الطويلة في الآيفون */
         .table-container {
             -webkit-overflow-scrolling: touch;
         }
         
-        /* تأثير الخط المحفور لشاشة النظام */
         .engraved-signature {
             font-family: 'Georgia', 'Times New Roman', serif;
             font-size: 11px;
@@ -44,7 +42,6 @@
             text-shadow: -0.5px -0.5px 0.5px rgba(0, 0, 0, 0.25), 0.5px 0.5px 0.5px rgba(255, 255, 255, 0.9);
         }
 
-        /* التحكم الكامل بإعدادات الطباعة الرسمية */
         @media print {
             .no-print { display: none !important; }
             .print-padding { padding: 0 !important; background: white; }
@@ -54,7 +51,6 @@
             .table-container { display: block !important; }
             .mobile-cards { display: none !important; }
             .print-signature { display: flex !important; }
-            
             .engraved-signature {
                 color: #555555 !important;
                 text-shadow: -0.5px -0.5px 0px rgba(0,0,0,0.15) !important;
@@ -62,159 +58,162 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-3 md:p-8 print-padding">
+<body class="bg-gray-100 min-h-screen p-2.5 sm:p-6 print-padding">
 
-    <!-- الهوية البصرية الرسمية والشعار (تختفي تلقائياً عند الطباعة) -->
-    <div class="bg-white shadow-md border-b border-gray-200 py-4 px-4 mb-4 rounded-2xl max-w-5xl mx-auto no-print">
+    <!-- الهوية البصرية الرسمية والشعار -->
+    <div class="bg-white shadow-sm border border-gray-200 py-3.5 px-4 mb-3.5 rounded-2xl max-w-2xl mx-auto no-print">
         <div class="flex flex-col items-center justify-center gap-2">
-            <!-- الشعار الجديد مدمج بشكل دائري أنيق ومحمي من الظهور في الطباعة -->
-            <img src="https://i.top4top.io/p_3846jmm321.jpeg" alt="شعار البرنامج" class="w-14 h-14 object-cover rounded-full border border-gray-200 shadow-sm">
+            <img src="https://i.top4top.io/p_3846jmm321.jpeg" alt="شعار البرنامج" class="w-12 h-12 object-cover rounded-full border border-gray-100 shadow-xs">
             <div class="text-center">
-                <h1 class="text-base font-extrabold text-gray-800">نظام حساب ساعات خارج الدوام</h1>
-                <p class="text-gray-500 text-[10px] md:text-xs mt-1 text-center font-bold bg-gray-50 px-2.5 py-1 rounded-full border border-gray-100">نهاية الدوام: 02:20 م | الحد اليومي: 4 ساعات (6:20 م) | النصاب: 104 ساعات</p>
+                <h1 class="text-sm font-extrabold text-gray-800">نظام حساب ساعات خارج الدوام</h1>
+                <p class="text-gray-500 text-[10px] mt-1 text-center font-bold bg-gray-50 px-2.5 py-1 rounded-full border border-gray-100 leading-relaxed">نهاية الدوام: 02:20 م | الحد اليومي: 4 ساعات | النصاب: 104 ساعات</p>
             </div>
         </div>
     </div>
 
     <!-- حاوية محتوى البرنامج الرئيسية -->
-    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-4 md:p-6 border border-gray-100 print-border">
+    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-md p-3.5 sm:p-6 border border-gray-200/60 print-border">
         
-        <!-- عنوان للطباعة فقط يظهر بدلاً من الهوية البصرية والشعار -->
-        <div class="hidden print:block text-center mb-6 border-b border-gray-100 pb-6">
-            <h1 class="text-2xl font-extrabold text-gray-900">تقرير رصد ساعات خارج الدوام التفصيلي</h1>
+        <!-- عنوان للطباعة فقط -->
+        <div class="hidden print:block text-center mb-6 border-b border-gray-100 pb-4">
+            <h1 class="text-xl font-extrabold text-gray-900"> </h1>
         </div>
 
-        <!-- المساعد الذكي لتخطيط المدة والخطة المستقبلية (مخفي من الطباعة) -->
-        <div class="no-print bg-amber-50/60 border border-amber-200 rounded-xl p-4 mb-5">
-            <h3 class="text-xs font-bold text-amber-900 mb-2 flex items-center gap-2">🎯 المساعد الذكي: تخطيط مدة التكليف والخطة المستقبلية</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end mb-3">
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-600 mb-1">تاريخ بداية التكليف:</label>
-                    <input type="date" id="planFrom" onchange="calculatePlan()" class="w-full p-2.5 bg-white border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-amber-500">
+        <!-- المساعد الذكي لتخطيط المدة والخطة المستقبلية -->
+        <div class="no-print bg-amber-50/60 border border-amber-200/80 rounded-xl p-3.5 mb-4">
+            <h3 class="text-xs font-extrabold text-amber-900 mb-2.5 flex items-center gap-1.5">🎯 المساعد الذكي: تخطيط مدة التكليف والخطة</h3>
+            
+            <!-- شبكة مدخلات التكليف المحدثة لمنع الخروج عن الحدود -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 items-end mb-3">
+                <div class="w-full">
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1">تاريخ بداية التكليف:</label>
+                    <input type="date" id="planFrom" onchange="calculatePlan()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-600 mb-1">تاريخ نهاية التكليف:</label>
-                    <input type="date" id="planTo" onchange="calculatePlan()" class="w-full p-2.5 bg-white border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-amber-500">
+                <div class="w-full">
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1">تاريخ نهاية التكليف:</label>
+                    <input type="date" id="planTo" onchange="calculatePlan()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
                 </div>
             </div>
-            <div id="planResultBox" class="hidden bg-white border border-amber-200 rounded-lg p-3 text-xs text-gray-700 space-y-2"></div>
+            
+            <div id="planResultBox" class="hidden bg-white border border-amber-200 rounded-lg p-3 text-[11px] text-gray-700 space-y-2"></div>
         </div>
 
-        <!-- العداد العام المطور وشريط التقدم (مخفي من الطباعة) -->
-        <div class="no-print bg-blue-50/50 p-4 rounded-xl border border-blue-100 mb-5">
+        <!-- العداد العام المطور وشريط التقدم -->
+        <div class="no-print bg-blue-50/50 p-3.5 rounded-xl border border-blue-100 mb-4">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 mb-2">
-                <span class="text-xs font-bold text-blue-900">مجموع الساعات المسجلة في هذا التقرير:</span>
-                <span id="totalHoursText" class="text-lg md:text-2xl font-extrabold text-blue-700">0 / 104 ساعة</span>
+                <span class="text-[11px] font-bold text-blue-900">مجموع الساعات المسجلة في هذا التقرير:</span>
+                <span id="totalHoursText" class="text-base sm:text-xl font-extrabold text-blue-700">0 / 104 ساعة</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden mb-2">
-                <div id="progressBar" class="bg-blue-600 h-3 transition-all duration-500" style="width: 0%"></div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden mb-2">
+                <div id="progressBar" class="bg-blue-600 h-2.5 transition-all duration-500" style="width: 0%"></div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px] border-t border-blue-100/60 pt-2 font-medium">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[10px] border-t border-blue-100/60 pt-2 font-medium">
                 <p id="targetStatus" class="text-gray-700"></p>
                 <p id="remainingDaysStatus" class="text-gray-700 sm:text-left font-bold text-blue-800"></p>
             </div>
         </div>
 
-        <!-- لوحة المدخلات اليومية وزر البصمة الجديد (مخفي من الطباعة) -->
-        <div class="no-print bg-white shadow-sm border border-gray-200 p-4 rounded-xl mb-5">
-            <h2 class="text-xs font-bold text-gray-700 mb-3 flex items-center gap-2">➕ تسجيل يوم عمل جديد أو رصد إجازة رسمية</h2>
+        <!-- لوحة المدخلات اليومية وزر البصمة -->
+        <div class="no-print bg-white shadow-xs border border-gray-200 p-3.5 rounded-xl mb-4">
+            <h2 class="text-xs font-bold text-gray-700 mb-2.5 flex items-center gap-1.5">➕ تسجيل يوم عمل جديد أو رصد إجازة</h2>
             
-            <div class="flex flex-col md:flex-row items-center gap-5">
-                
-                <!-- حقول الإدخال اليدوي -->
-                <div class="w-full md:flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div class="flex flex-col gap-4">
+                <!-- حقول الإدخال اليدوي المنسقة للجوال -->
+                <div class="w-full grid grid-cols-1 gap-2.5">
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-600 mb-1">تاريخ اليوم:</label>
-                        <input type="date" id="logDate" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <label class="block text-[10px] font-bold text-gray-500 mb-1">تاريخ اليوم:</label>
+                        <input type="date" id="logDate" class="w-full p-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-600 mb-1">وقت تسجيل الخروج:</label>
-                        <input type="time" id="logTime" value="18:20" class="w-full p-2 bg-gray-50 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-center font-bold">
+                        <label class="block text-[10px] font-bold text-gray-500 mb-1">وقت تسجيل الخروج:</label>
+                        <input type="time" id="logTime" value="18:20" class="w-full p-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none text-center font-bold">
                     </div>
-                    <div class="flex flex-row gap-2 sm:col-span-2 items-end">
-                        <button onclick="addLog(false)" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 rounded-lg transition duration-200 cursor-pointer text-xs min-h-[44px]">
+                    
+                    <!-- أزرار العمليات المنسقة بالكامل لتكون جنباً إلى جنب بشكل ممتاز -->
+                    <div class="flex flex-row gap-2 mt-1">
+                        <button onclick="addLog(false)" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 rounded-lg transition duration-200 cursor-pointer text-[11px] min-h-[42px]">
                             إدراج (يوم عمل)
                         </button>
-                        <button onclick="addLog(true)" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-lg transition duration-200 cursor-pointer text-xs min-h-[44px]">
+                        <button onclick="addLog(true)" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 rounded-lg transition duration-200 cursor-pointer text-[11px] min-h-[42px]">
                             🌴 رصد (إجازة)
                         </button>
                     </div>
                 </div>
 
-                <!-- فاصل رأسي خفيف للشاشات الكبيرة -->
-                <div class="hidden md:block h-24 w-px bg-gray-200"></div>
+                <!-- خط فاصل أفقي على الجوال -->
+                <div class="w-full h-px bg-gray-200 my-1"></div>
 
-                <!-- زر البصمة بالرابط المحدث وخلفية دائرية متناسقة ومخفي بالكامل بالطباعة ومناسب للآيفون -->
-                <div class="flex flex-col items-center justify-center gap-1.5 px-4">
+                <!-- زر البصمة الأنيق أسفل المدخلات بطريقة مرتبة جداً للجوال -->
+                <div class="flex flex-row items-center justify-between bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100">
+                    <div class="text-right">
+                        <span class="block text-xs font-extrabold text-emerald-950">بصمة سريعة بالوقت الحالي</span>
+                        <span class="text-[10px] text-emerald-700">اضغط للبصم فوراً برقم اليوم والوقت الآن</span>
+                    </div>
                     <button onclick="quickBiometricLog()" title="اضغط للبصم الفوري بالوقت الحالي الآن" 
-                            class="group relative w-20 h-20 bg-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-gray-200 shadow-sm overflow-hidden min-h-[44px]">
-                        <img src="https://e.top4top.io/p_3846u9eqj1.jpeg" 
-                             alt="بصمة" 
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:rotate-6">
+                            class="group relative w-12 h-12 bg-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-emerald-200 shadow-xs overflow-hidden min-h-[42px]">
+                        <img src="https://e.top4top.io/p_3846u9eqj1.jpeg" alt="بصمة" class="w-full h-full object-cover">
                     </button>
-                    <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">بصمة سريعة</span>
                 </div>
-
             </div>
         </div>
 
-        <!-- بيان رصد الساعات والعمليات التفصيلي (يظهر بالطباعة) -->
-        <div class="mb-5">
-            <h2 class="text-sm font-bold text-gray-800 mb-2">📋 بيان رصد الساعات والعمليات التفصيلي</h2>
+        <!-- بيان رصد الساعات والعمليات التفصيلي -->
+        <div class="mb-4">
+            <h2 class="text-xs font-bold text-gray-800 mb-2">سجل بيان ساعات خارج الدوام </h2>
             
-            <!-- الجدول (شاشات كبيرة وطباعة) -->
-            <div class="table-container hidden md:block overflow-x-auto border border-gray-200 rounded-xl">
+            <!-- الجدول (شاشات متوسطة وكبيرة والطباعة) -->
+            <div class="table-container hidden sm:block overflow-x-auto border border-gray-200 rounded-xl">
                 <table class="w-full text-right border-collapse">
                     <thead>
-                        <tr class="bg-gray-800 text-white text-xs font-bold">
-                            <th class="p-3">اليوم</th>
-                            <th class="p-3">التاريخ</th>
-                            <th class="p-3 text-center">حالة الحضور / وقت الخروج</th>
-                            <th class="p-3 text-center">خارج الدوام المستحق</th>
-                            <th class="p-3 text-center no-print">إجراء</th>
+                        <tr class="bg-gray-800 text-white text-[11px] font-bold">
+                            <th class="p-2.5">اليوم</th>
+                            <th class="p-2.5">التاريخ</th>
+                            <th class="p-2.5 text-center">حالة الحضور / وقت الخروج</th>
+                            <th class="p-2.5 text-center">خارج الدوام المستحق</th>
+                            <th class="p-2.5 text-center no-print">إجراء</th>
                         </tr>
                     </thead>
                     <tbody id="logsTableBody" class="divide-y divide-gray-200 text-gray-600 text-xs"></tbody>
                 </table>
             </div>
 
-            <!-- الكروت المرنة (للجوال والآيفون فقط ومخفية من الطباعة تلقائياً) -->
-            <div id="logsMobileCards" class="mobile-cards block md:hidden space-y-2.5 no-print"></div>
+            <!-- الكروت المرنة (للجوال فقط ومعدلة بعناية ومخفية من الطباعة) -->
+            <div id="logsMobileCards" class="mobile-cards block sm:hidden space-y-2 no-print"></div>
 
             <div id="noDataMessage" class="text-center p-6 text-gray-400 border border-dashed border-gray-200 rounded-xl mt-2 hidden text-xs">
                 لا توجد سجلات أو إجازات مضافة حتى الآن.
             </div>
         </div>
 
-        <!-- توقيع ومصمم النظام الاحترافي (يظهر في الطباعة) -->
-        <div class="mt-6 pt-2.5 border-t border-gray-100 flex justify-end items-center print-signature">
+        <!-- توقيع ومصمم النظام الاحترافي يظهر بالطباعة -->
+        <div class="mt-4 pt-2 border-t border-gray-100 flex justify-end items-center print-signature">
             <div class="text-left select-none">
-                <span class="engraved-signature italic">Ali Hakami</span>
+                <span class="engraved-signature italic"></span>
             </div>
         </div>
 
-        <!-- أزرار التحكم والطباعة (مخفي من الطباعة) -->
-        <div class="no-print flex flex-col sm:flex-row justify-end gap-2.5 my-5 border-t border-gray-100 pt-3.5">
-            <button onclick="archiveCurrentPeriod()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-3 rounded-xl transition duration-200 cursor-pointer text-xs min-h-[44px]">
+        <!-- أزرار التحكم والطباعة -->
+        <div class="no-print flex flex-col gap-2 my-4 border-t border-gray-100 pt-3">
+            <button onclick="archiveCurrentPeriod()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition duration-200 cursor-pointer text-xs min-h-[42px]">
                 📦 ترحيل للأرشيف وبدء فترة جديدة
             </button>
-            <button onclick="window.print()" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-3 rounded-xl transition duration-200 cursor-pointer text-xs flex items-center justify-center gap-1 min-h-[44px]">
+            <button onclick="window.print()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg transition duration-200 cursor-pointer text-xs flex items-center justify-center gap-1 min-h-[42px]">
                 🖨️ طباعة التقرير الحالي
             </button>
         </div>
 
-        <!-- الأرشيف والعمليات الكبرى (مخفي من الطباعة) -->
-        <div class="no-print border-t-2 border-dashed border-gray-200 pt-5 mt-5">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3.5">
+        <!-- الأرشيف والعمليات الكبرى -->
+        <div class="no-print border-t-2 border-dashed border-gray-200 pt-4 mt-4">
+            <div class="flex flex-col gap-1 mb-3">
                 <h2 class="text-xs font-bold text-purple-900 flex items-center gap-1.5">📦 أرشيف التقارير السابقة المغلقة</h2>
-                <button onclick="clearAllSystemData()" class="text-[11px] text-red-600 hover:underline cursor-pointer">🗑️ مسح كل بيانات النظام والأرشيف</button>
+                <button onclick="clearAllSystemData()" class="text-[10px] text-red-600 hover:underline cursor-pointer text-right">🗑️ مسح كل بيانات النظام والأرشيف</button>
             </div>
-            <div id="archiveContainer" class="space-y-2.5"></div>
+            <div id="archiveContainer" class="space-y-2"></div>
         </div>
 
     </div>
 
-    <!-- المنطق البرمجي الكامل (JavaScript) لعمل التطبيق بكفاءة متناهية واسترجاع البيانات -->
+    <!-- المنطق البرمجي المطور للعمل مع التحديثات البصرية -->
     <script>
         const daysArabic = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
         const TARGET_HOURS = 104;
@@ -271,7 +270,7 @@
             let endDate = new Date(toDateStr);
             
             if (endDate < startDate) {
-                resultBox.innerHTML = `<span class="text-red-600 font-bold">⚠️ خطأ: تاريخ النهاية لا يمكن أن يكون قبل تاريخ البداية!</span>`;
+                resultBox.innerHTML = `<span class="text-red-600 font-bold">⚠️ خطأ: تاريخ النهاية يسبق البداية!</span>`;
                 resultBox.classList.remove('hidden');
                 return;
             }
@@ -310,8 +309,8 @@
             let remainingHoursNeeded = Math.max(TARGET_HOURS - totalCalculatedHours, 0);
 
             let htmlContent = `
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] border-b border-amber-200 pb-2 mb-2">
-                    <div>💼 إجمالي أيام عمل التكليف: <span class="font-bold text-gray-900">${totalWorkingDays} يوم</span></div>
+                <div class="flex flex-col gap-1 text-[11px] border-b border-amber-200/60 pb-2 mb-2 leading-relaxed">
+                    <div>💼 إجمالي أيام عمل التكليف: <span class="font-bold text-gray-950">${totalWorkingDays} يوم</span></div>
                     <div>📉 أيام عمل منقضية (منتهية): <span class="font-bold text-red-600">${elapsedWorkingDays} يوم</span></div>
                     <div>⏳ أيام عمل متبقية (بالمستقبل): <span class="font-bold text-green-700">${remainingWorkingDays} يوم</span></div>
                     <div>🎯 صافي الأيام المتاحة للخطة: <span class="font-bold text-blue-700">${finalActionableDays} يوم عمل</span></div>
@@ -320,14 +319,14 @@
 
             if (remainingHoursNeeded <= 0) {
                 htmlContent += `
-                    <div class="bg-green-50 border border-green-200 p-2.5 rounded-lg text-green-900 font-medium text-center text-[11px]">
+                    <div class="bg-green-50 border border-green-200 p-2 rounded-lg text-green-900 font-bold text-center text-[10px]">
                         🎉 ممتاز! تم تحقيق نصاب الـ 104 ساعات بالكامل.
                     </div>
                 `;
             } else if (finalActionableDays <= 0) {
                 htmlContent += `
-                    <div class="bg-red-50 border border-red-200 p-2.5 rounded-lg text-red-700 font-medium text-[11px]">
-                        ⚠️ انتهت الأيام المتاحة بالمستقبل ولم يتم رصد ساعات كافية للوصول للنصاب!
+                    <div class="bg-red-50 border border-red-200 p-2 rounded-lg text-red-700 font-bold text-[10px]">
+                        ⚠️ انتهت الأيام المتاحة بالمستقبل ولم يتم رصد ساعات كافية!
                     </div>
                 `;
             } else {
@@ -336,7 +335,7 @@
 
                 if (maxPossibleRemaining < remainingHoursNeeded) {
                     htmlContent += `
-                        <div class="p-2.5 bg-red-50 text-red-700 rounded border border-red-200 text-[11px]">
+                        <div class="p-2 bg-red-50 text-red-700 rounded border border-red-200 text-[10px] font-bold leading-relaxed">
                             ⚠️ تنبيه: المتبقي ${remainingHoursNeeded.toFixed(2)} ساعة. الأيام المتبقية لا تكفي لتغطيتها بالكامل حتى مع رصد الحد الأقصى (4 ساعات/يوم).
                         </div>
                     `;
@@ -355,9 +354,9 @@
                     let targetExitTimeText = `${displayHours}:${displayMinutes} ${periodAmPm}`;
 
                     htmlContent += `
-                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-orange-200 p-2.5 rounded-lg text-amber-950 text-[11px]">
-                            🔄 لتغطية الساعات المتبقية، المطلوب يومياً: <span class="font-bold text-orange-700">${hoursPerDayNeeded.toFixed(2)} ساعة</span>
-                            <br>🎯 الانصراف المقترح للأيام المتبقية: <span class="bg-orange-600 text-white font-bold px-1.5 py-0.5 rounded text-[10px]">${targetExitTimeText}</span>
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-orange-200 p-2.5 rounded-lg text-amber-950 text-[10px] leading-relaxed">
+                            🔄 لتغطية المتبقي، المطلوب يومياً: <span class="font-bold text-orange-700">${hoursPerDayNeeded.toFixed(2)} ساعة</span>
+                            <br>🎯 الانصراف المقترح للأيام المتبقية: <span class="bg-orange-600 text-white font-bold px-1.5 py-0.5 rounded text-[9px] inline-block mt-1">${targetExitTimeText}</span>
                         </div>
                     `;
                 }
@@ -391,27 +390,27 @@
                 const tr = document.createElement('tr');
                 tr.className = log.isVacation ? "bg-orange-50/60 hover:bg-orange-100/50 transition-colors" : "hover:bg-gray-50 transition-colors";
                 tr.innerHTML = `
-                    <td class="p-3 font-medium text-gray-800">${log.dayName}</td>
-                    <td class="p-3">${log.date}</td>
-                    <td class="p-3 text-center">${presenceText}</td>
-                    <td class="p-3 text-center">${hoursText}</td>
-                    <td class="p-3 text-center no-print">
-                        <button onclick="deleteLog(${index})" class="text-red-500 hover:text-red-700 font-bold cursor-pointer text-base p-1.5 min-h-[44px] min-w-[44px]">❌</button>
+                    <td class="p-2.5 font-medium text-gray-800">${log.dayName}</td>
+                    <td class="p-2.5">${log.date}</td>
+                    <td class="p-2.5 text-center">${presenceText}</td>
+                    <td class="p-2.5 text-center">${hoursText}</td>
+                    <td class="p-2.5 text-center no-print">
+                        <button onclick="deleteLog(${index})" class="text-red-500 hover:text-red-700 font-bold cursor-pointer text-base p-1.5 min-h-[40px] min-w-[40px]">❌</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
 
                 const card = document.createElement('div');
-                card.className = `p-3.5 rounded-xl border ${log.isVacation ? 'bg-orange-50/70 border-orange-200' : 'bg-gray-50 border-gray-200'} flex flex-col gap-1.5 relative`;
+                card.className = `p-3 rounded-xl border ${log.isVacation ? 'bg-orange-50/70 border-orange-200' : 'bg-gray-50 border-gray-200'} flex flex-col gap-1.5 relative`;
                 card.innerHTML = `
-                    <button onclick="deleteLog(${index})" class="absolute top-3 left-3 text-red-500 font-bold text-base cursor-pointer p-2 min-h-[44px] min-w-[44px] flex items-center justify-center">❌</button>
+                    <button onclick="deleteLog(${index})" class="absolute top-2.5 left-2.5 text-red-500 font-bold text-base cursor-pointer p-2 min-h-[40px] min-w-[40px] flex items-center justify-center">❌</button>
                     <div class="flex justify-between items-center border-b border-gray-200/60 pb-1.5">
                         <span class="font-extrabold text-gray-900 text-xs">${log.dayName}</span>
                         <span class="text-[10px] text-gray-500 font-medium">${log.date}</span>
                     </div>
                     <div class="flex justify-between items-center text-xs pt-0.5">
-                        <div><span class="text-gray-500 text-[11px]">الحضور:</span> ${presenceText}</div>
-                        <div><span class="text-gray-500 text-[11px]">المستحق:</span> ${hoursText}</div>
+                        <div><span class="text-gray-500 text-[10px]">الحضور:</span> ${presenceText}</div>
+                        <div><span class="text-gray-500 text-[10px]">المستحق:</span> ${hoursText}</div>
                     </div>
                 `;
                 mobileCardsContainer.appendChild(card);
@@ -423,11 +422,11 @@
 
             const statusText = document.getElementById('targetStatus');
             if (totalCalculatedHours >= TARGET_HOURS) {
-                statusText.innerHTML = "🎉 <span class='text-green-600 font-bold text-xs sm:text-sm'>اكتمل النصاب المطلوب. جاهز للترحيل.</span>";
-                document.getElementById('progressBar').className = "bg-green-500 h-3 transition-all duration-500";
+                statusText.innerHTML = "🎉 <span class='text-green-600 font-bold text-xs'>اكتمل النصاب المطلوب. جاهز للترحيل.</span>";
+                document.getElementById('progressBar').className = "bg-green-500 h-2.5 transition-all duration-500";
             } else {
                 statusText.innerHTML = `متبقي <span class='font-bold text-orange-600'>${(TARGET_HOURS - totalCalculatedHours).toFixed(2)} ساعة</span> لاكتمال النصاب.`;
-                document.getElementById('progressBar').className = "bg-blue-600 h-3 transition-all duration-500";
+                document.getElementById('progressBar').className = "bg-blue-600 h-2.5 transition-all duration-500";
             }
 
             calculatePlan();
@@ -536,8 +535,8 @@
             }
             archivedPeriods.forEach((period, pIndex) => {
                 const div = document.createElement('div'); 
-                div.className = "bg-purple-50/40 p-3 rounded-lg border border-purple-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 text-xs";
-                div.innerHTML = `<div><span class="font-bold text-purple-900 block">تقرير مؤرشف بتاريخ: ${period.archiveDate}</span></div><div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end"><span class="font-bold text-purple-700 bg-purple-100 px-2.5 py-1 rounded-full">${period.totalHours.toFixed(2)} ساعة</span><div class="flex gap-2"><button onclick="restoreAndPrintArchive(${pIndex})" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-3 py-1.5 rounded cursor-pointer text-[11px] min-h-[35px]">استدعاء</button><button onclick="deleteArchive(${pIndex})" class="text-red-500 hover:text-red-700 font-bold px-1.5 text-sm min-h-[35px] flex items-center">❌</button></div></div>`;
+                div.className = "bg-purple-50/40 p-2.5 rounded-lg border border-purple-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs";
+                div.innerHTML = `<div><span class="font-bold text-purple-900 block">تقرير مؤرشف بتاريخ: ${period.archiveDate}</span></div><div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end"><span class="font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full">${period.totalHours.toFixed(2)} ساعة</span><div class="flex gap-2"><button onclick="restoreAndPrintArchive(${pIndex})" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-2.5 py-1.5 rounded cursor-pointer text-[10px] min-h-[35px]">استدعاء</button><button onclick="deleteArchive(${pIndex})" class="text-red-500 hover:text-red-700 font-bold px-1.5 text-sm min-h-[35px] flex items-center">❌</button></div></div>`;
                 container.appendChild(div);
             });
         }
